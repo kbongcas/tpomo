@@ -8,3 +8,4 @@
 !.vscode/*.code-snippets
 .history/
 *.vsix
+.vscode/settings.json
