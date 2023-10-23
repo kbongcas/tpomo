@@ -167,15 +167,12 @@ func (m model) View() string {
 		help = "exit: ctrl-c, esc | confirm: submit"
 	}
 
-	timer := m.timer.View()
-
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
 		s,
 		edit,
 		add,
 		help,
-		timer,
 	)
 }
 
