@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -17,6 +18,7 @@ type model struct {
 }
 
 var fileName = "tpomo_todos.json"
+var pomTime time.Duration = time.Second * 5
 
 func initialModel() model {
 	todos := getTodos(fileName)
@@ -84,6 +86,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	switch msg := msg.(type) {
+
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
@@ -128,12 +131,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.editField.SetValue(m.todos[m.cursor].Name)
 			}
 		}
+
 	}
 	return m, nil
 }
 
 func (m model) View() string {
 	s := "Your Todos:\n\n"
+	help := "exit: ctrl-c, esc | confirm: submit | delete: d | edit: e | check: space"
 
 	for i, todo := range m.todos {
 		cursor := ""
@@ -153,24 +158,30 @@ func (m model) View() string {
 	edit := ""
 	if m.editField.Focused() {
 		edit = m.editField.View()
+		help = "exit: ctrl-c, esc | confirm: submit"
 	}
 
 	add := ""
 	if m.addField.Focused() {
 		add = m.addField.View()
+		help = "exit: ctrl-c, esc | confirm: submit"
 	}
+
+	timer := m.timer.View()
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
 		s,
 		edit,
 		add,
+		help,
+		timer,
 	)
 }
 
 func main() {
 	p := tea.NewProgram(initialModel())
-	if err := p.Start(); err != nil {
+	if _, err := p.Run(); err != nil {
 		fmt.Printf("There was an error.")
 		os.Exit(1)
 	}

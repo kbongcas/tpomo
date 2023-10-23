@@ -8,6 +8,7 @@ import (
 type todo struct {
 	Name string `json:"name"`
 	Done bool   `json:"done"`
+	Poms int    `json:"poms"`
 }
 
 func getTodos(fileName string) (todos []todo) {
